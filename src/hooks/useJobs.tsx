@@ -10,17 +10,27 @@ import { delay, generateId } from '../lib/utils';
  */
 export function useJobs() {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [runs, setRuns] = useState<JobRun[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchJobs = useCallback(async () => {
     setLoading(true);
-    const resp = await jobsService.getJobs();
-    if (resp.success && resp.data) {
-      setJobs(resp.data);
+    const [jobsResp, runsResp] = await Promise.all([
+      jobsService.getJobs(),
+      jobsService.getAllJobRuns()
+    ]);
+
+    if (jobsResp.success && jobsResp.data) {
+      setJobs(jobsResp.data);
     } else {
-      setError(resp.error);
+      setError(jobsResp.error);
     }
+
+    if (runsResp.success && runsResp.data) {
+      setRuns(runsResp.data);
+    }
+
     setLoading(false);
   }, []);
 
@@ -94,6 +104,8 @@ export function useJobs() {
 
     // Store the run and update the job record
     await jobsService.addJobRun(runRecord);
+    setRuns(prev => [runRecord, ...prev]);
+    
     await updateJob(id, { 
       status: finalStatus,
       runCount: job.runCount + 1,
@@ -104,6 +116,7 @@ export function useJobs() {
 
   return {
     jobs,
+    runs,
     loading,
     error,
     refresh: fetchJobs,

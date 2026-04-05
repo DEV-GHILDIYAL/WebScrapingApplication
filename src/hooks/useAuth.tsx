@@ -8,6 +8,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signUp: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   isAuthenticated: boolean;
 }
@@ -41,6 +42,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { success: false, error: resp.error || 'Authentication failed.' };
   };
 
+  const signUp = async (email: string, password: string, name: string) => {
+    setLoading(true);
+    const resp = await authService.signUp(email, name);
+    if (resp.success && resp.data) {
+      setUser(resp.data);
+      setLoading(false);
+      return { success: true };
+    }
+    setLoading(false);
+    return { success: false, error: resp.error || 'Account creation failed.' };
+  };
+
   const signOut = async () => {
     setLoading(true);
     await authService.signOut();
@@ -49,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );

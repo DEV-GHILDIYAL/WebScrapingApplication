@@ -108,11 +108,10 @@ export const jobsService = {
     return { success: true, data: true, error: null };
   },
 
-  async getJobRuns(jobId: string): Promise<ApiResponse<JobRun[]>> {
-    await delay(800);
+  async getAllJobRuns(): Promise<ApiResponse<JobRun[]>> {
+    await delay(1000);
     const runs = getStoredRuns();
-    const filtered = runs.filter(r => r.jobId === jobId);
-    return { success: true, data: filtered.sort((a, b) => b.startedAt.localeCompare(a.startedAt)), error: null };
+    return { success: true, data: runs.sort((a, b) => b.startedAt.localeCompare(a.startedAt)), error: null };
   },
 
   async addJobRun(run: JobRun): Promise<void> {
