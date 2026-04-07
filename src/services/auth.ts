@@ -10,7 +10,7 @@ export const authService = {
   async getCurrentUser(): Promise<ApiResponse<User>> {
     await delay(Math.random() * 700 + 800);
     
-    if (shouldFail(0.05)) {
+    if (shouldFail(0.02)) { // Keep session-get failure lower for better UX
       return { success: false, data: null, error: 'Session expired or invalid.' };
     }
 
@@ -20,7 +20,7 @@ export const authService = {
   async signIn(email: string, password: string): Promise<ApiResponse<User>> {
     await delay(1200);
 
-    if (shouldFail(0.1)) {
+    if (shouldFail()) {
       return { success: false, data: null, error: 'Invalid credentials provided.' };
     }
 
@@ -35,7 +35,7 @@ export const authService = {
   async signUp(email: string, name: string): Promise<ApiResponse<User>> {
     await delay(1500);
 
-    if (shouldFail(0.1)) {
+    if (shouldFail()) {
       return { success: false, data: null, error: 'An error occurred during account creation.' };
     }
 

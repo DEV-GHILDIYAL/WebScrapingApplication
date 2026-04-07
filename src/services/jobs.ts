@@ -1,6 +1,7 @@
 import { Job, JobRun, JobStatus, ApiResponse } from '../lib/types';
 import { MOCK_JOBS, MOCK_JOB_RUNS } from '../lib/mock-data';
 import { delay, shouldFail, generateId } from '../lib/utils';
+import { analyticsService } from './analytics';
 
 /**
  * Mock Jobs Service (DynamoDB + SQS abstraction)
@@ -39,7 +40,7 @@ const setStoredRuns = (runs: JobRun[]) => {
 export const jobsService = {
   async getJobs(): Promise<ApiResponse<Job[]>> {
     await delay(Math.random() * 700 + 800);
-    if (shouldFail(0.1)) return { success: false, data: null, error: 'Failed to fetch jobs from database.' };
+    if (shouldFail()) return { success: false, data: null, error: 'Failed to fetch jobs from database.' };
     
     return { success: true, data: getStoredJobs(), error: null };
   },
@@ -55,7 +56,7 @@ export const jobsService = {
 
   async createJob(jobData: Partial<Job>): Promise<ApiResponse<Job>> {
     await delay(1500);
-    if (shouldFail(0.15)) return { success: false, data: null, error: 'Error creating job entry.' };
+    if (shouldFail()) return { success: false, data: null, error: 'Error creating job entry.' };
 
     const newJob: Job = {
       id: generateId('job_'),
@@ -77,6 +78,7 @@ export const jobsService = {
     const updatedJobs = [newJob, ...jobs];
     setStoredJobs(updatedJobs);
 
+    analyticsService.trackEvent('job_created', { jobId: newJob.id, name: newJob.name });
     return { success: true, data: newJob, error: null };
   },
 

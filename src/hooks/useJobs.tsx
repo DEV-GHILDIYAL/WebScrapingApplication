@@ -67,51 +67,61 @@ export function useJobs() {
    * Simulate a job execution lifecycle: 
    * QUEUED -> RUNNING -> COMPLETED/FAILED
    */
-  const runJob = async (id: string) => {
+  /**
+   * Simulate a job execution lifecycle: 
+   * QUEUED -> RUNNING -> COMPLETED/FAILED
+   */
+  const runJob = async (id: string): Promise<ApiResponse<boolean>> => {
     const job = jobs.find(j => j.id === id);
-    if (!job) return;
+    if (!job) return { success: false, data: false, error: 'Job not found.' };
 
-    // 1. Transition to QUEUED
-    await updateJob(id, { status: JobStatus.QUEUED });
-    
-    // Simulate Step Function trigger latency
-    await delay(1000); 
+    try {
+      // 1. Transition to QUEUED
+      await updateJob(id, { status: JobStatus.QUEUED });
+      
+      // Simulate Step Function trigger latency
+      await delay(1000); 
 
-    // 2. Transition to RUNNING
-    const runId = generateId('run_');
-    const startedAt = new Date().toISOString();
-    await updateJob(id, { status: JobStatus.RUNNING, lastRunAt: startedAt });
+      // 2. Transition to RUNNING
+      const runId = generateId('run_');
+      const startedAt = new Date().toISOString();
+      await updateJob(id, { status: JobStatus.RUNNING, lastRunAt: startedAt });
 
-    // Simulate scraping duration
-    await delay(3000 + Math.random() * 5000);
+      // Simulate scraping duration
+      await delay(3000 + Math.random() * 5000);
 
-    // 3. Complete or Fail (85% success)
-    const isSuccess = Math.random() < 0.85;
-    const recordsExtracted = isSuccess ? Math.floor(Math.random() * 2000) + 100 : 0;
-    const completedAt = new Date().toISOString();
-    
-    const finalStatus = isSuccess ? JobStatus.COMPLETED : JobStatus.FAILED;
+      // 3. Complete or Fail (85% success)
+      const isSuccess = Math.random() < 0.85;
+      const recordsExtracted = isSuccess ? Math.floor(Math.random() * 2000) + 100 : 0;
+      const completedAt = new Date().toISOString();
+      
+      const finalStatus = isSuccess ? JobStatus.COMPLETED : JobStatus.FAILED;
 
-    const runRecord: JobRun = {
-      id: runId,
-      jobId: id,
-      status: finalStatus,
-      startedAt,
-      completedAt,
-      recordsExtracted,
-      error: isSuccess ? undefined : 'Scraping failed: Connection refused by target server.'
-    };
+      const runRecord: JobRun = {
+        id: runId,
+        jobId: id,
+        status: finalStatus,
+        startedAt,
+        completedAt,
+        recordsExtracted,
+        error: isSuccess ? undefined : 'Scraping failed: Connection refused by target server.'
+      };
 
-    // Store the run and update the job record
-    await jobsService.addJobRun(runRecord);
-    setRuns(prev => [runRecord, ...prev]);
-    
-    await updateJob(id, { 
-      status: finalStatus,
-      runCount: job.runCount + 1,
-      successCount: job.successCount + (isSuccess ? 1 : 0),
-      failureCount: job.failureCount + (isSuccess ? 0 : 1)
-    });
+      // Store the run and update the job record
+      await jobsService.addJobRun(runRecord);
+      setRuns(prev => [runRecord, ...prev]);
+      
+      await updateJob(id, { 
+        status: finalStatus,
+        runCount: job.runCount + 1,
+        successCount: job.successCount + (isSuccess ? 1 : 0),
+        failureCount: job.failureCount + (isSuccess ? 0 : 1)
+      });
+
+      return { success: true, data: true, error: null };
+    } catch (err) {
+      return { success: false, data: false, error: 'Failed to execute job.' };
+    }
   };
 
   return {

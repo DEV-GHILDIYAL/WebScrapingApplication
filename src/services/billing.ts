@@ -9,7 +9,7 @@ import { delay, shouldFail } from '../lib/utils';
 export const billingService = {
   async getBillingInfo(): Promise<ApiResponse<BillingInfo>> {
     await delay(1200);
-    if (shouldFail(0.05)) return { success: false, data: null, error: 'Failed to retrieve billing information.' };
+    if (shouldFail()) return { success: false, data: null, error: 'Failed to retrieve billing information.' };
     
     const mockInfo: BillingInfo = {
       currentPlan: PLANS.PROFESSIONAL,

@@ -202,6 +202,16 @@ The app runs at **http://localhost:3000**
 - **CDN**: CloudFront for static assets
 - **DNS**: Route 53
 
+## Production Readiness
+
+The platform includes several features for enterprise-grade production use:
+
+- **Global Toast System**: Consistent user feedback for all async actions (success, error, info, warning).
+- **Automated Analytics**: Built-in mock tracking for page views and custom events (e.g., job creation, proxy tests).
+- **Service Hardening**: Simulated network latency and a configurable failure rate (default 15%) to test robust error handling.
+- **Skeleton Loading**: High-performance perceived loading using animated CSS skeletons for dashboards and tables.
+- **Accessibility (a11y)**: Semantic HTML, aria-labels, and full keyboard navigation support.
+
 ## License
 
 Proprietary — All rights reserved.

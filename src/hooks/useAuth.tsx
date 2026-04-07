@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { User } from '../lib/types';
 import { authService } from '../services/auth';
 
@@ -11,6 +11,8 @@ interface AuthContextType {
   signUp: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   isAuthenticated: boolean;
+  error: string | null;
+  refresh: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,17 +20,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const initAuth = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const resp = await authService.getCurrentUser();
+    if (resp.success) {
+      setUser(resp.data);
+    } else {
+      setError(resp.error || 'Failed to connect to authentication server.');
+    }
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    async function initAuth() {
-      const resp = await authService.getCurrentUser();
-      if (resp.success) {
-        setUser(resp.data);
-      }
-      setLoading(false);
-    }
     initAuth();
-  }, []);
+  }, [initAuth]);
 
   const signIn = async (email: string, password: string) => {
     setLoading(true);
@@ -62,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, loading, error, signIn, signUp, signOut, isAuthenticated: !!user, refresh: initAuth }}>
       {children}
     </AuthContext.Provider>
   );

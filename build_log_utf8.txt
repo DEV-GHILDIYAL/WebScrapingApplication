@@ -1,0 +1,90 @@
+﻿
+> scrapeflow@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.5.14
+   - Environments: .env
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 8.8s
+   Linting and checking validity of types ...
+
+./src/components/landing/Testimonials.tsx
+57:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+node.exe : Failed to 
+compile.
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (F  
+  ailed to compile.:Str   
+ ing) [], RemoteExcept    
+ion
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+
+./src/app/dashboard/jobs/p
+age.tsx:12:33
+Type error: Property 
+'refreshJobs' does not 
+exist on type '{ jobs: 
+Job[]; runs: JobRun[]; 
+loading: boolean; error: 
+string | null; refresh: 
+() => Promise<void>; 
+createJob: (jobData: 
+Partial<Job>) => Promise<A
+piResponse<Job>>; 
+updateJob: (id: string, 
+updates: Partial<...>) => 
+Promise<...>; deleteJob: 
+(id: string) => 
+Promise<...>; runJob: 
+(id: string) => 
+Promise<...>; }'.
+
+[0m [90m 10 |[39m
+ [90m 11 |[39m 
+[36mexport[39m 
+[36mdefault[39m 
+[36mfunction[39m 
+[33mJobsPage[39m() {
+[31m[1m>[22m[39m[90m 
+12 |[39m   
+[36mconst[39m { 
+jobs[33m,[39m 
+loading[33m,[39m 
+error[33m,[39m 
+refreshJobs[33m,[39m 
+deleteJob[33m,[39m 
+runJob } [33m=[39m 
+useJobs()[33m;[39m
+ [90m    |[39m          
+                       
+[31m[1m^[22m[39m
+ [90m 13 |[39m   
+ [90m 14 |[39m   
+[36mconst[39m 
+[searchTerm[33m,[39m 
+setSearchTerm] 
+[33m=[39m useState([32m
+''[39m)[33m;[39m
+ [90m 15 |[39m   
+[36mconst[39m 
+[statusFilter[33m,[39m 
+setStatusFilter] 
+[33m=[39m useState([32m
+'ALL'[39m)[33m;[39m[0m
+Next.js build worker 
+exited with code: 1 and 
+signal: null

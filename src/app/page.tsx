@@ -8,25 +8,16 @@ import CTA from '@/components/landing/CTA';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white selection:bg-brand-100 selection:text-brand-900">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      
-      {/* Hero section */}
-      <Hero />
-
-      {/* Features section */}
-      <Features />
-
-      {/* How it works section */}
-      <HowItWorks />
-
-      {/* Testimonials section */}
-      <Testimonials />
-
-      {/* CTA section */}
-      <CTA />
-
+      <main className="flex-grow">
+        <Hero />
+        <Features />
+        <HowItWorks />
+        <Testimonials />
+        <CTA />
+      </main>
       <Footer />
-    </main>
+    </div>
   );
 }

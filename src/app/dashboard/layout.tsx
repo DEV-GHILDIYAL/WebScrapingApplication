@@ -13,22 +13,60 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isAuthenticated, loading, user } = useAuth();
+  const { isAuthenticated, loading, user, error, refresh } = useAuth();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Auth protection guard
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
+    // Only redirect if NOT loading AND NOT authenticated AND no error is present
+    // (If error is present, we show the retry UI instead of redirecting)
+    if (!loading && !isAuthenticated && !error) {
       router.push('/auth/signin');
     }
-  }, [loading, isAuthenticated, router]);
+  }, [loading, isAuthenticated, error, router]);
 
   // Show loading state while checking authentication
-  if (loading || (!isAuthenticated && !user)) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <PageSpinner message="Verifying session..." />
+      </div>
+    );
+  }
+
+  // Show error state with retry if session check failed
+  if (error && !isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+        <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-modal border border-danger-100 text-center animate-fade-in">
+          <div className="w-16 h-16 bg-danger-50 text-danger-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-slate-900">Connection Interrupted</h2>
+          <p className="text-slate-500 mt-2 mb-8">
+            {error}. This may be a temporary network issue.
+          </p>
+          <div className="flex flex-col gap-3">
+            <button 
+              onClick={refresh}
+              className="w-full bg-brand-600 text-white font-bold h-11 rounded-lg hover:bg-brand-700 transition-all flex items-center justify-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Try to Reconnect
+            </button>
+            <button 
+              onClick={() => router.push('/auth/signin')}
+              className="w-full bg-white text-slate-600 font-semibold h-11 rounded-lg border border-slate-200 hover:bg-slate-50 transition-all"
+            >
+              Return to Sign In
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -57,9 +95,9 @@ export default function DashboardLayout({
             >
               <X size={20} />
             </button>
-            {/* Reuse Sidebar component logic but without fixed positioning in drawer */}
+            {/* Mobile Drawer Sidebar - Ensure it's visible by overriding max-md:hidden */}
             <div className="flex flex-col h-full pointer-events-auto">
-               <Sidebar />
+               <Sidebar className="relative border-none !w-full" />
             </div>
           </div>
         </div>

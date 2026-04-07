@@ -1,6 +1,7 @@
 import { JobStatus, PlanTier, ProxyType, BillingPlan } from './types';
 
 export const APP_NAME = 'ScrapeFlow';
+export const FAILURE_RATE = 0.15; // 15% chance of simulated failure
 
 export const JOB_STATUS_CONFIG: Record<JobStatus, { label: string; color: string; bgColor: string }> = {
   [JobStatus.QUEUED]: {

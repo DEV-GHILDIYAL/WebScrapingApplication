@@ -28,10 +28,10 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  xs: 'text-xs px-2.5 py-1.5 gap-1',
-  sm: 'text-sm px-3 py-1.5 gap-1.5',
-  md: 'text-sm px-4 py-2.5 gap-2',
-  lg: 'text-base px-6 py-3 gap-2.5',
+  xs: 'text-xs h-7 px-2 gap-1',
+  sm: 'text-sm h-9 px-3 gap-1.5',
+  md: 'text-sm h-10 px-4 gap-2',
+  lg: 'text-base h-12 px-6 gap-2.5',
 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(

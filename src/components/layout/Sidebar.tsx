@@ -23,7 +23,7 @@ const navItems = [
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ className = '' }: { className?: string }) {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -33,7 +33,7 @@ export default function Sidebar() {
       className={`
         fixed left-0 top-0 h-screen bg-white border-r border-slate-200 transition-all duration-300 z-50 flex flex-col
         ${isCollapsed ? 'w-20' : 'w-64'}
-        max-md:hidden
+        ${className || 'max-md:hidden'}
       `}
     >
       {/* Sidebar Header */}

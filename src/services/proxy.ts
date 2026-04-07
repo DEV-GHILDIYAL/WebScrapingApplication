@@ -25,7 +25,7 @@ const setStoredProviders = (providers: ProxyProvider[]) => {
 export const settingsService = {
   async getProxyProviders(): Promise<ApiResponse<ProxyProvider[]>> {
     await delay(1000);
-    if (shouldFail(0.05)) return { success: false, data: null, error: 'Failed to load proxy settings.' };
+    if (shouldFail()) return { success: false, data: null, error: 'Failed to load proxy settings.' };
     return { success: true, data: getStoredProviders(), error: null };
   },
 
@@ -53,7 +53,7 @@ export const settingsService = {
 
   async testProxyProvider(id: string): Promise<ApiResponse<boolean>> {
     await delay(2000); // Testing takes longer
-    if (shouldFail(0.3)) return { success: false, data: null, error: 'Connection failed: Access denied or invalid credentials.' };
+    if (shouldFail(0.2)) return { success: false, data: null, error: 'Connection failed: Access denied or invalid credentials.' };
     return { success: true, data: true, error: null };
   },
 

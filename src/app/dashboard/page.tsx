@@ -20,7 +20,8 @@ import {
   CardContent, 
   Button, 
   Badge, 
-  PageSpinner,
+  StatsSkeleton,
+  TableSkeleton,
   EmptyState 
 } from '@/components/ui';
 import { JobStatus } from '@/lib/types';
@@ -47,7 +48,29 @@ export default function DashboardPage() {
     };
   }, [jobs, runs]);
 
-  if (loading) return <PageSpinner message="Loading dashboard data..." />;
+  if (loading && jobs.length === 0) {
+    return (
+      <div className="space-y-8 animate-fade-in">
+        <div className="flex justify-between items-center">
+            <div className="space-y-2">
+                <div className="h-8 w-48 bg-slate-100 rounded animate-pulse" />
+                <div className="h-4 w-64 bg-slate-50 rounded animate-pulse" />
+            </div>
+            <div className="h-10 w-32 bg-slate-100 rounded animate-pulse" />
+        </div>
+        <StatsSkeleton />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+                <TableSkeleton rows={5} cols={3} />
+            </div>
+            <div className="space-y-6">
+                <div className="h-48 bg-slate-50 rounded-xl animate-pulse" />
+                <div className="h-32 bg-slate-50 rounded-xl animate-pulse" />
+            </div>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (
